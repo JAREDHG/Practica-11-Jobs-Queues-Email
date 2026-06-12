@@ -1,27 +1,36 @@
-# Proyecto: SPA (Single Page Application) - Gestión de Productos
+# Práctica 11: Sistema de Gestión de Pedidos
 
-Este proyecto es una aplicación web de gestión de productos desarrollada con Laravel (Backend) y Vue.js (Frontend), implementando buenas prácticas de desarrollo, incluyendo una suite de pruebas automatizadas completa para garantizar la calidad del código.
+Esta práctica implementa un sistema de gestión de pedidos con procesamiento asíncrono utilizando Laravel Queues. El objetivo principal fue desacoplar el proceso de envío de notificaciones por correo electrónico del flujo principal de la API para mejorar la escalabilidad y la experiencia del usuario (UX).
+
+# Características Principales
+
+- **Procesamiento Asíncrono:** Uso de Laravel Queues (driver: database) para manejar envíos de correo en segundo plano.
+- **API RESTful:** Endpoints protegidos mediante Laravel Sanctum para la creación y consulta de pedidos.
+- **Monitoreo en Tiempo Real:** Implementación de polling en el frontend (Vue.js) para notificar al usuario el estado de su pedido sin recargar la página.
+- **Integridad de Datos:** Uso de transacciones de base de datos para garantizar la consistencia en el stock y el registro del pedido.
+
 
 ## Tecnologías Utilizadas
 
-- **Backend:** Laravel (API REST, Eloquent ORM, Sanctum para autenticación).
-- **Frontend:** Vue.js 3, Pinia (gestión de estado), Vitest (testing).
-- **Base de Datos:** SQLite (en memoria para pruebas).
+- **Backend:** Laravel 11, PHP 8.x, MySQL/MariaDB.
+- **Frontend:** Vue 3, Pinia (gestión de estado), Axios (peticiones HTTP), Vue Router.
+- **Infraestructura:** Laravel Queues (Worker procesando jobs en segundo plano), Mailtrap (servidor SMTP de pruebas).
 
-## Pruebas Automatizadas
-El proyecto cumple con los criterios de testing de la Práctica 10, alcanzando una cobertura al 70%.
+## Configuración de Entorno
 
-### Ejecutar Backend
-Para ejecutar las pruebas de integración del API:
+- Clonar el repositorio.
+- Ejecutar composer install y npm install.
+- Configurar el archivo .env:
 ```bash
-php artisan test --filter ProductoTest
+QUEUE_CONNECTION=database
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+# ... credenciales adicionales
 ```
-
-## Ejecutar Frontend
-Para ejecutar las pruebas unitarias y de componentes:
+- Ejecutar las migraciones: php artisan migrate.
+- Iniciar el worker para procesar colas:
 ```bash
-cd practica3-frontend
-npm run test
+php artisan queue:work
 ```
 
 **Desarrollado por:** Jared Hernández González - Universidad Politécnica de Texcoco (UPTex) 

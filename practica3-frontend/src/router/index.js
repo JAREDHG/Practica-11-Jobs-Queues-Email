@@ -10,6 +10,16 @@ const routes = [
     props: true,
   },
   { path: '/carrito', name: 'carrito', component: () => import('../views/CartView.vue') },
+  
+  // --- NUEVA RUTA DE CONFIRMACIÓN DE PEDIDO ---
+  { 
+    path: '/pedidos/confirmacion/:id', 
+    name: 'confirmacion', 
+    component: () => import('../views/ConfirmacionPedidoView.vue'),
+    props: true,
+    meta: { requiresAuth: true } 
+  },
+
   { path: '/login', name: 'login', component: () => import('../views/LoginView.vue') },
   { path: '/register', name: 'register', component: () => import('../views/RegisterView.vue') },
 
@@ -18,7 +28,7 @@ const routes = [
     path: '/admin',
     redirect: '/admin/dashboard',
     component: () => import('../layouts/AdminLayout.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true }, // Se añade requiresAdmin
+    meta: { requiresAuth: true, requiresAdmin: true },
     children: [
       { path: 'dashboard', name: 'Dashboard', component: () => import('../views/admin/Dashboard.vue') },
       { path: 'crear', name: 'CrearProducto', component: () => import('../views/admin/CrearProducto.vue') },
@@ -50,7 +60,7 @@ router.beforeEach(async (to) => {
   // 2. Permitir acceso a Admin y Editor
   const rolesPermitidos = ['admin', 'editor'];
   if (to.meta.requiresAdmin && !rolesPermitidos.includes(auth.user?.role)) {
-    return { path: '/' } // Si no es admin, lo expulsamos al Home
+    return { path: '/' }
   }
 })
 

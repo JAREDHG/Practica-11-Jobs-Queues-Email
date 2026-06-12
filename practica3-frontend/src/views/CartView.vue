@@ -75,8 +75,9 @@
 </template>
 
 <script setup>
-import { useCarritoStore } from '../stores/carrito'
-import { useRouter } from 'vue-router'
+import { useCarritoStore } from '../stores/carrito';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 const carrito = useCarritoStore()
 const router = useRouter()
@@ -87,9 +88,31 @@ const confirmarVaciar = () => {
   }
 }
 
-const finalizarCompra = () => {
-  alert('Procesando compra... ¡Gracias por tu pedido!')
-  carrito.vaciar()
-  router.push('/')
+const finalizarCompra = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    const pedidoData = {
+      items: carrito.items.map(item => ({
+        producto_id: item.id, 
+        cantidad: item.cantidad,
+        precio: item.precio
+      }))
+    };
+
+    const { data } = await axios.post('http://localhost:8000/api/pedidos', pedidoData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
+    carrito.vaciar();
+    
+    router.push(`/pedidos/confirmacion/${data.pedido_id}`);
+    
+  } catch (error) {
+    console.error("Error al finalizar la compra:", error);
+    alert("Hubo un error al procesar tu pedido. Inténtalo de nuevo.");
+  }
 }
 </script>

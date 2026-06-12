@@ -3,15 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pedido extends Model
 {
-    protected $fillable = ['user_id', 'total'];
+    protected $fillable = ['user_id', 'total', 'estado', 'email_enviado_at'];
 
-    // Relación: Un pedido tiene muchos productos
-    public function productos()
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(Producto::class, 'pedido_producto')
-                    ->withPivot('cantidad');
+        return $this->belongsTo(User::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(PedidoItem::class);
     }
 }
